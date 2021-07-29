@@ -31,8 +31,8 @@ class ResBasicBLock(nn.Module):
 
         if in_channel != out_channel or stride!=1:
             self.shortcut = nn.Sequential(
-                self.Conv2d(in_channel,out_channel,1,stride=stride),
-                self.BatchNorm2d(out_channel)
+                nn.Conv2d(in_channel,out_channel,1,stride=stride),
+                nn.BatchNorm2d(out_channel)
             )
         else:
             self.shortcut = nn.Sequential()
@@ -95,7 +95,7 @@ def create_resnet_model(in_channel,ni,nh,no):
         nn.Conv2d(in_channel,8,3,stride=1,padding=1),
         ResBasicBLock(8,16,stride=2),
         ResBasicBLock(16,16),
-        ResBasicBLock(16,32,stride2),
+        ResBasicBLock(16,32,stride=2),
         ResBasicBLock(32,32),
         Reshape((-1,ni)),
         nn.Linear(ni,nh),
@@ -138,7 +138,7 @@ model_dict = {
             "no" : 10
         },
         "resnet": {
-            "in_channel": 1,
+            "in_channel": 3,
             "ni" : 2048,
             "nh" : 64,
             "no" : 10
