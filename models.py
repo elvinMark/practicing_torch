@@ -103,6 +103,11 @@ def create_resnet_model(in_channel,ni,nh,no):
         nn.Linear(nh,no)
     )
 
+def create_generator_mlp_model():
+    """
+    
+    """
+
 create_model_dict = {"mlp":create_mlp_model,"cnn":create_cnn_model,"resnet":create_resnet_model}
 
 model_dict = {
