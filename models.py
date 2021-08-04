@@ -53,6 +53,7 @@ def create_mlp_model(ni,nh,no):
     """
     
     return nn.Sequential(
+        Reshape((-1,ni)),
         nn.Linear(ni,nh),
         nn.ReLU(inplace=True),
         nn.Linear(nh,no)
@@ -107,6 +108,7 @@ def create_generator_mlp_model():
     """
     
     """
+    pass
 
 create_model_dict = {"mlp":create_mlp_model,"cnn":create_cnn_model,"resnet":create_resnet_model}
 
