@@ -132,6 +132,25 @@ model_dict = {
             "no" : 10
         }
     },
+    "KMNIST": {
+        "mlp": {
+            "ni" : 784,
+            "nh" : 256,
+            "no" : 10
+        },
+        "cnn": {
+            "in_channel": 1,
+            "ni" : 576,
+            "nh" : 128,
+            "no" : 10
+        },
+        "resnet": {
+            "in_channel": 1,
+            "ni" : 1568,
+            "nh" : 64,
+            "no" : 10
+        }
+    },
     "CIFAR10": {
         "mlp": {
             "ni" : 3072,
@@ -173,5 +192,5 @@ model_dict = {
 }
 
 
-def create_model(dataset_name,model_type):
-    return create_model_dict[model_type](**model_dict[dataset_name][model_type])
+def create_model(args):
+    return create_model_dict[args.model](**model_dict[args.dataset][args.model])

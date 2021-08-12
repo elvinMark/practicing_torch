@@ -16,6 +16,11 @@ datasets_dict = {
         "transform" : torchvision.transforms.ToTensor(),
         "test_transform" : torchvision.transforms.ToTensor()
     },
+    "KMNIST" : {
+        "loader" : torchvision.datasets.KMNIST,
+        "transform" : torchvision.transforms.ToTensor(),
+        "test_transform" : torchvision.transforms.ToTensor()
+    },
     "CIFAR10": {
         "loader" : torchvision.datasets.CIFAR10,
         "transform" : torchvision.transforms.Compose([
@@ -46,11 +51,11 @@ datasets_dict = {
     }
 }
 
-def create_dataloaders(dataset_name,batch_size):
-    train_ds = datasets_dict[dataset_name]["loader"](ROOT_PATH,train=True,download=True,transform=datasets_dict[dataset_name]["transform"])
-    test_ds = datasets_dict[dataset_name]["loader"](ROOT_PATH,train=False,download=True,transform=datasets_dict[dataset_name]["test_transform"])
+def create_dataloaders(args):
+    train_ds = datasets_dict[args.dataset]["loader"](ROOT_PATH,train=True,download=True,transform=datasets_dict[args.dataset]["transform"])
+    test_ds = datasets_dict[args.dataset]["loader"](ROOT_PATH,train=False,download=True,transform=datasets_dict[args.dataset]["test_transform"])
 
-    train_dl = torch.utils.data.DataLoader(train_ds,batch_size=batch_size)
-    test_dl = torch.utils.data.DataLoader(test_ds,batch_size=batch_size)
+    train_dl = torch.utils.data.DataLoader(train_ds,batch_size=args.batch_size)
+    test_dl = torch.utils.data.DataLoader(test_ds,batch_size=args.batch_size)
         
     return train_dl, test_dl

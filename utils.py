@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 
-def train(model,train_dl,test_dl,optim,sched,crit,dev,epochs=50,project=None,experiment=None):
-    if project and experiment:
+def train(model,train_dl,test_dl,optim,sched,crit,dev,args):
+    if args.project and args.experiment:
         try:
             import wandb
             wandb.init(
-                project= project,
-                name=experiment
+                project= args.project,
+                name=args.experiment
             )
             logger = wandb.log
         except:
@@ -15,7 +15,7 @@ def train(model,train_dl,test_dl,optim,sched,crit,dev,epochs=50,project=None,exp
 
     best_acc=torch.tensor(0.)
         
-    for epoch in range(epochs):
+    for epoch in range(args.epochs):
         train_loss = 0.
         correct = 0.
         total = 0.
@@ -44,9 +44,17 @@ def train(model,train_dl,test_dl,optim,sched,crit,dev,epochs=50,project=None,exp
             "test_acc": test_acc,
             "test_loss": test_loss
             })
+
+        if args.checkpoint > 0  and epoch % args.checpoint == 0:
+            torch.save(model,args.path + f"_{epoch}.ckpt")
+        
     logger({
         "best_test_acc": best_acc
         })
+    
+    if args.checkpoint == -1:
+            torch.save(model,args.path + "_last.ckpt")
+        
     
 def validate(model,test_dl,crit,dev):
     tot_loss = 0.

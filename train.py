@@ -7,9 +7,10 @@ from datasets import create_dataloaders
 from optimizers import create_optimizer
 from schedulers import create_lr_scheduler
 from utils import train
+import os
 
 parser =argparse.ArgumentParser(description="train helper")
-parser.add_argument("--dataset",type=str,default="MNIST",choices=["MNIST","CIFAR10"],help="choose the dataset to train")
+parser.add_argument("--dataset",type=str,default="MNIST",choices=["MNIST","KMNIST","CIFAR10","CIFAR100"],help="choose the dataset to train")
 parser.add_argument("--model",type=str,default="mlp",choices=["mlp","cnn","resnet"],help="choose what type of model to be used")
 parser.add_argument("--batch-size",type=int,default=128,help="batch size used for training")
 parser.add_argument("--project",type=str,default="project",help="name of the project")
@@ -22,20 +23,24 @@ parser.add_argument("--step-size",type=int,default=50,help="step size used in th
 parser.add_argument("--gamma",type=float,default=0.2,help="gamma factor used in the StepLR scheduler")
 parser.add_argument("--T_max",type=float,default=200,help="T_max factor used in CosineAnnealingLR scheduler")
 parser.add_argument("--eta_min",type=float,default=0.,help="eta_min factor used in CosineAnnealingLR scheduler")
+parser.add_argument("--checkpoint",type=int, default=-1,help="specified how frequent to save the models")
+parser.add_argument("--path",type=str,default="./saved_models",help="specified the path where the checkpoint models are going to be saved")
+
 
 args = parser.parse_args()
 args.T_max = args.epochs
+args.path = os.path.join(args.path,args.experiment)
 
 if torch.cuda.is_available():
     dev = torch.device("cuda:0")
 else:
     dev = torch.device("cpu")
     
-model = create_model(args.dataset,args.model).to(dev)
-train_dl, test_dl = create_dataloaders(args.dataset,args.batch_size)
+model = create_model(args).to(dev)
+train_dl, test_dl = create_dataloaders(args)
 
 optim = create_optimizer(model,args)
 sched = create_lr_scheduler(optim,args)
 crit = nn.CrossEntropyLoss()
 
-train(model,train_dl,test_dl,optim,sched,crit,dev,epochs=args.epochs,project=args.project,experiment=args.experiment)
+train(model,train_dl,test_dl,optim,sched,crit,dev,args)
